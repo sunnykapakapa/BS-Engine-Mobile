@@ -847,13 +847,11 @@ class WeekEditorVideoState extends MusicBeatState
 
 	var text:FlxText;
 
-	public function new(source:String, weekFile:WeekFile = null)
+	public function new(source:String)
 	{
 		super();
 
 		this.weekFile = WeekData.createWeekFile();
-
-		if(weekFile != null) this.weekFile = weekFile;
 
 		text = new FlxText(0, 0, 0, "toque para continuar", 48);
 		text.screenCenter();
@@ -867,20 +865,16 @@ class WeekEditorVideoState extends MusicBeatState
 	}
 
 	public override function update(dt:Float) {
-		
-		if(WeekEditorState.loadedWeek != null) {
-			return;
-		}
-		
 		for (touch in FlxG.touches.list)
 			if (touch.justReleased)
 				onClose(); //hmmmm maybe
 
-		super.update(dt);	
+		super.update(dt);
 	}
 
 	function onClose(){// not working
-		return;
+		text.alpha = 0;
+	MusicBeatState.switchState(new WeekEditorState(weekFile));
 	}
 
 	function onURLChanging(url:String) {
