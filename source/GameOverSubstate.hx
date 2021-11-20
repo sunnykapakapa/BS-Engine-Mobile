@@ -27,7 +27,11 @@ class GameOverSubstate extends MusicBeatSubstate
 	public static var endSoundName:String = 'gameOverEnd';
 
 	public static function resetVariables() {
+		if(ClientPrefs.cenoptim && !PlayState.isPixelStage && !PlayState.antireanim){
+			characterName = 'bfreanim';
+		} else {
 		characterName = 'bf';
+		}
 		deathSoundName = 'fnf_loss_sfx';
 		loopSoundName = 'gameOver';
 		endSoundName = 'gameOverEnd';
@@ -54,6 +58,8 @@ class GameOverSubstate extends MusicBeatSubstate
 		FlxG.camera.target = null;
 
 		bf.playAnim('firstDeath');
+
+		addVirtualPad(NONE, A_B);
 
 		var exclude:Array<Int> = [];
 

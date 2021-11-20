@@ -1,5 +1,10 @@
 package editors;
 
+import ui.FlxVirtualPad;
+import flixel.addons.ui.FlxUIButton;
+import lime.utils.Assets;
+import openfl.utils.Assets;
+import openfl.utils.Assets;
 #if desktop
 import Discord.DiscordClient;
 #end
@@ -44,8 +49,14 @@ class DialogueEditorState extends MusicBeatState
 
 	var defaultLine:DialogueLine;
 	var dialogueFile:DialogueFile = null;
+	var _pad:FlxVirtualPad;
+
+	var key_teste:FlxUIButton;
+
+	var key_menos:FlxUIButton;
 
 	override function create() {
+
 		persistentUpdate = persistentDraw = true;
 		FlxG.camera.bgColor = FlxColor.fromHSL(0, 0, 0.5);
 
@@ -83,7 +94,7 @@ class DialogueEditorState extends MusicBeatState
 		addEditorBox();
 		FlxG.mouse.visible = true;
 
-		var addLineText:FlxText = new FlxText(10, 10, FlxG.width - 20, 'Press O to remove the current dialogue line, Press P to add another line after the current one.', 8);
+		var addLineText:FlxText = new FlxText(10, 10, FlxG.width - 20, 'Aperte O ou - para remover a fala atual, Aperte P ou + para adicionar uma fala nova.', 8);
 		addLineText.setFormat(Paths.font("vcr.ttf"), 16, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		addLineText.scrollFactor.set();
 		add(addLineText);
@@ -97,7 +108,11 @@ class DialogueEditorState extends MusicBeatState
 		animText.setFormat(Paths.font("vcr.ttf"), 24, FlxColor.WHITE, LEFT, FlxTextBorderStyle.OUTLINE, FlxColor.BLACK);
 		animText.scrollFactor.set();
 		add(animText);
+		
 		changeText();
+
+		addVirtualPad(FULL, NONE);
+
 		super.create();
 	}
 
@@ -124,7 +139,32 @@ class DialogueEditorState extends MusicBeatState
 		var tab_group = new FlxUI(null, UI_box);
 		tab_group.name = "Dialogue Line";
 
+		key_teste = new FlxUIButton(60, 200, "-", function() {
+			dialogueFile.dialogue.remove(dialogueFile.dialogue[curSelected]);
+			if(dialogueFile.dialogue.length < 1) //You deleted everything, dumbo!
+			{
+				dialogueFile.dialogue = [
+					copyDefaultLine()
+				];
+			}
+			changeText();
+		});
+        key_teste.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
+		key_teste.resize(125,50);
+        key_teste.alpha = 0.75;
+        add(key_teste);
+
+		key_menos = new FlxUIButton(60, (key_teste.y + key_teste.height + 25), "+", function() {
+			dialogueFile.dialogue.insert(curSelected + 1, copyDefaultLine());
+			changeText(1);
+		});
+        key_menos.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
+		key_menos.resize(125,50);
+        key_menos.alpha = 0.75;
+        add(key_menos);
+
 		characterInputText = new FlxUIInputText(10, 20, 80, DialogueCharacter.DEFAULT_CHARACTER, 8);
+		characterInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
 		blockPressWhileTypingOn.push(characterInputText);
 
 		speedStepper = new FlxUINumericStepper(10, characterInputText.y + 40, 0.005, 0.05, 0, 0.5, 3);
@@ -137,6 +177,7 @@ class DialogueEditorState extends MusicBeatState
 		};
 		
 		lineInputText = new FlxUIInputText(10, speedStepper.y + 45, 200, DEFAULT_TEXT, 8);
+		lineInputText.focusGained = () -> FlxG.stage.window.textInputEnabled = true;
 		blockPressWhileTypingOn.push(lineInputText);
 
 		var loadButton:FlxButton = new FlxButton(20, lineInputText.y + 30, "Load Dialogue", function() {
@@ -190,6 +231,7 @@ class DialogueEditorState extends MusicBeatState
 	}
 
 	function reloadCharacter() {
+		if(character != null) {
 		character.frames = Paths.getSparrowAtlas('dialogue/' + character.jsonFile.image);
 		character.jsonFile = character.jsonFile;
 		character.reloadAnimations();
@@ -212,13 +254,13 @@ class DialogueEditorState extends MusicBeatState
 		characterAnimSpeed();
 
 		if(character.animation.curAnim != null) {
-			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
-		} else {
-			animText.text = 'ERROR! NO ANIMATIONS FOUND';
+			animText.text = 'Animacao: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Aperte cima/baixo para trocar a expressao';
+		}} else {
+			animText.text = 'Escreva o nome certo do boneco';
 		}
 	}
 
-	private static var DEFAULT_TEXT:String = "coolswag";
+	private static var DEFAULT_TEXT:String = "kek";
 	private static var DEFAULT_SPEED:Float = 0.05;
 	private static var DEFAULT_BUBBLETYPE:String = "normal";
 	function reloadText(speed:Float = 0.05) {
@@ -255,6 +297,7 @@ class DialogueEditorState extends MusicBeatState
 	override function getEvent(id:String, sender:Dynamic, data:Dynamic, ?params:Array<Dynamic>) {
 		if(id == FlxUIInputText.CHANGE_EVENT && (sender is FlxUIInputText)) {
 			if(sender == characterInputText) {
+				if (Assets.exists(Paths.image('dialogue/' + sender), IMAGE)) {
 				character.reloadCharacterJson(characterInputText.text);
 				reloadCharacter();
 				updateTextBox();
@@ -263,9 +306,9 @@ class DialogueEditorState extends MusicBeatState
 					curAnim = 0;
 					if(character.jsonFile.animations.length > curAnim && character.jsonFile.animations[curAnim] != null) {
 						character.playAnim(character.jsonFile.animations[curAnim].anim, daText.finishedText);
-						animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
-					} else {
-						animText.text = 'ERROR! NO ANIMATIONS FOUND';
+						animText.text = 'Animacao: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Aperte cima/baixo para trocar a expressao';
+					}} else {
+						animText.text = 'Sem personagens por enquanto';
 					}
 					characterAnimSpeed();
 				}
@@ -335,14 +378,20 @@ class DialogueEditorState extends MusicBeatState
 			if(FlxG.keys.justPressed.SPACE) {
 				reloadText(speedStepper.value);
 			}
-			if(FlxG.keys.justPressed.ESCAPE) {
+			#if android
+			var androidback = FlxG.android.justReleased.BACK;
+			#else
+			var androidback = false;
+			#end
+
+			if(FlxG.keys.justPressed.ESCAPE || androidback) {
 				MusicBeatState.switchState(new editors.MasterEditorMenu());
 				FlxG.sound.playMusic(Paths.music('freakyMenu'), 1);
 				transitioning = true;
 			}
 			var negaMult:Array<Int> = [1, -1];
-			var controlAnim:Array<Bool> = [FlxG.keys.justPressed.W, FlxG.keys.justPressed.S];
-			var controlText:Array<Bool> = [FlxG.keys.justPressed.D, FlxG.keys.justPressed.A];
+			var controlAnim:Array<Bool> = [controls.UI_UP_P, controls.UI_DOWN_P];
+			var controlText:Array<Bool> = [controls.UI_RIGHT_P, controls.UI_LEFT_P];
 			for (i in 0...controlAnim.length) {
 				if(controlAnim[i] && character.jsonFile.animations.length > 0) {
 					curAnim += negaMult[i];
@@ -354,7 +403,7 @@ class DialogueEditorState extends MusicBeatState
 						character.playAnim(animToPlay, daText.finishedText);
 						dialogueFile.dialogue[curSelected].expression = animToPlay;
 					}
-					animText.text = 'Animation: ' + animToPlay + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Press W or S to scroll';
+					animText.text = 'Animacao: ' + animToPlay + ' (' + (curAnim + 1) +' / ' + character.jsonFile.animations.length + ') - Aperte cima/baixo para trocar a expressao';
 				}
 				if(controlText[i]) {
 					changeText(negaMult[i]);
@@ -405,13 +454,13 @@ class DialogueEditorState extends MusicBeatState
 				}
 			}
 			character.playAnim(character.jsonFile.animations[curAnim].anim, daText.finishedText);
-			animText.text = 'Animation: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + leLength + ') - Press W or S to scroll';
+			animText.text = 'Animacao: ' + character.jsonFile.animations[curAnim].anim + ' (' + (curAnim + 1) +' / ' + leLength + ') - Aperte cima/baixo para trocar a expressao';
 		} else {
 			animText.text = 'ERROR! NO ANIMATIONS FOUND';
 		}
 		characterAnimSpeed();
 
-		selectedText.text = 'Line: (' + (curSelected + 1) + ' / ' + dialogueFile.dialogue.length + ') - Press A or D to scroll';
+		selectedText.text = 'Fala: (' + (curSelected + 1) + ' / ' + dialogueFile.dialogue.length + ') - Aperte para direita/esquerda para trocar entre as falas';
 	}
 
 	function characterAnimSpeed() {
@@ -450,19 +499,18 @@ class DialogueEditorState extends MusicBeatState
 		_file.removeEventListener(Event.CANCEL, onLoadCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 
-		#if sys
 		var fullPath:String = null;
 		var jsonLoaded = cast Json.parse(Json.stringify(_file)); //Exploit(???) for accessing a private variable
 		if(jsonLoaded.__path != null) fullPath = jsonLoaded.__path; //I'm either a genious or dangerously dumb
 
 		if(fullPath != null) {
-			var rawJson:String = File.getContent(fullPath);
+			var rawJson:String = Paths.json('test' + '/dialogue');
 			if(rawJson != null) {
 				var loadedDialog:DialogueFile = cast Json.parse(rawJson);
 				if(loadedDialog.dialogue != null && loadedDialog.dialogue.length > 0) //Make sure it's really a dialogue file
 				{
 					var cutName:String = _file.name.substr(0, _file.name.length - 5);
-					trace("Successfully loaded file: " + cutName);
+					//trace("Successfully loaded file: " + cutName);
 					dialogueFile = loadedDialog;
 					changeText();
 					_file = null;
@@ -471,9 +519,6 @@ class DialogueEditorState extends MusicBeatState
 			}
 		}
 		_file = null;
-		#else
-		trace("File couldn't be loaded! You aren't on Desktop, are you?");
-		#end
 	}
 
 	/**
@@ -485,7 +530,7 @@ class DialogueEditorState extends MusicBeatState
 		_file.removeEventListener(Event.CANCEL, onLoadCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 		_file = null;
-		trace("Cancelled file loading.");
+		//trace("Cancelled file loading.");
 	}
 
 	/**
@@ -497,11 +542,14 @@ class DialogueEditorState extends MusicBeatState
 		_file.removeEventListener(Event.CANCEL, onLoadCancel);
 		_file.removeEventListener(IOErrorEvent.IO_ERROR, onLoadError);
 		_file = null;
-		trace("Problem loading file");
+		//trace("Problem loading file");
 	}
 
 	function saveDialogue() {
 		var data:String = Json.stringify(dialogueFile, "\t");
+
+		openfl.system.System.setClipboard(data.trim());
+
 		if (data.length > 0)
 		{
 			_file = new FileReference();

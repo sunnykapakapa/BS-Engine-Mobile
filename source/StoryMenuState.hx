@@ -16,6 +16,8 @@ import flixel.tweens.FlxTween;
 import flixel.util.FlxColor;
 import flixel.util.FlxTimer;
 import lime.net.curl.CURLCode;
+import GambiarraState; //OU TU VAI OU TU VAI PACERO
+import LoadingState;
 import WeekData;
 
 using StringTools;
@@ -179,6 +181,9 @@ class StoryMenuState extends MusicBeatState
 
 		changeWeek();
 
+		#if mobileC
+		addVirtualPad(FULL, A_B);
+		#end
 		super.create();
 	}
 
@@ -194,7 +199,7 @@ class StoryMenuState extends MusicBeatState
 		lerpScore = Math.floor(FlxMath.lerp(lerpScore, intendedScore, CoolUtil.boundTo(elapsed * 30, 0, 1)));
 		if(Math.abs(intendedScore - lerpScore) < 10) lerpScore = intendedScore;
 
-		scoreText.text = "WEEK SCORE:" + lerpScore;
+		scoreText.text = "Recorde da Semana:" + lerpScore;
 
 		// FlxG.watch.addQuick('font', scoreText.font);
 
@@ -233,12 +238,6 @@ class StoryMenuState extends MusicBeatState
 			{
 				selectWeek();
 			}
-			else if(controls.RESET)
-			{
-				persistentUpdate = false;
-				openSubState(new ResetScoreSubState('', curDifficulty, '', curWeek));
-				FlxG.sound.play(Paths.sound('scrollMenu'));
-			}
 		}
 
 		if (controls.BACK && !movedBack && !selectedWeek)
@@ -247,6 +246,7 @@ class StoryMenuState extends MusicBeatState
 			movedBack = true;
 			MusicBeatState.switchState(new MainMenuState());
 		}
+
 
 		super.update(elapsed);
 
@@ -294,14 +294,22 @@ class StoryMenuState extends MusicBeatState
 			PlayState.storyWeek = curWeek;
 			PlayState.campaignScore = 0;
 			PlayState.campaignMisses = 0;
+			var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[curWeek]);
 			new FlxTimer().start(1, function(tmr:FlxTimer)
 			{
-				LoadingState.loadAndSwitchState(new PlayState(), true);
-				FreeplayState.destroyFreeplayVocals();
-			});
-		} else {
-			FlxG.sound.play(Paths.sound('cancelMenu'));
-		}
+			if(leWeek.temcutscene && !ClientPrefs.dacut)
+			{
+				LoadingState.loadAndSwitchState(new VideoState('assets/videos/' + leWeek.cutscenombre, new PlayState()));
+			}
+			else // dando uso para esta parte do codigo
+			{
+				GambiarraState.loadAndSwitchState(new PlayState());
+			}
+			FreeplayState.destroyFreeplayVocals();
+		});
+	} else {
+		FlxG.sound.play(Paths.sound('cancelMenu'));
+	}
 	}
 
 	function changeDifficulty(change:Int = 0):Void
@@ -384,7 +392,7 @@ class StoryMenuState extends MusicBeatState
 		var leWeek:WeekData = WeekData.weeksLoaded.get(WeekData.weeksList[curWeek]);
 		var stringThing:Array<String> = [];
 		for (i in 0...leWeek.songs.length) {
-			stringThing.push(leWeek.songs[i][0]);
+			stringThing.push(leWeek.songs[i][3]); //vai se foder Marcos
 		}
 
 		txtTracklist.text = '';

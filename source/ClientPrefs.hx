@@ -12,18 +12,27 @@ class ClientPrefs {
 	public static var showFPS:Bool = true;
 	public static var flashing:Bool = true;
 	public static var globalAntialiasing:Bool = true;
-	public static var noteSplashes:Bool = true;
+	public static var noteSplashes:Bool = false;
 	public static var lowQuality:Bool = false;
 	public static var framerate:Int = 60;
 	public static var cursing:Bool = true;
-	public static var violence:Bool = true;
+	public static var violence:Bool = false;
 	public static var camZooms:Bool = true;
 	public static var hideHud:Bool = false;
 	public static var noteOffset:Int = 0;
+	public static var osusom:Float = 0.5;
 	public static var arrowHSV:Array<Array<Int>> = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
 	public static var imagesPersist:Bool = false;
 	public static var ghostTapping:Bool = true;
 	public static var hideTime:Bool = false;
+	public static var easteregg:Bool = false;
+	public static var cenoptim:Bool = false;
+	public static var dacut:Bool = false;
+	public static var dagf:Bool = false;
+	public static var dadia:Bool = false;
+	public static var speed:Float = 2;
+	public static var noteSize:Float = 0.7;
+	public static var scroll:Bool = false;
 
 	//Every key has two binds, these binds are defined on defaultKeys! If you want your control to be changeable, you have to add it on ControlsSubState (inside OptionsState.hx)'s list
 	public static var keyBinds:Map<String, Dynamic> = new Map<String, Dynamic>();
@@ -61,9 +70,13 @@ class ClientPrefs {
 		FlxG.save.data.lowQuality = lowQuality;
 		FlxG.save.data.framerate = framerate;
 		//FlxG.save.data.cursing = cursing;
-		//FlxG.save.data.violence = violence;
+		FlxG.save.data.violence = violence;
+		FlxG.save.data.speed = speed;
+		FlxG.save.data.scroll = scroll;
+		FlxG.save.data.noteSize = noteSize;
 		FlxG.save.data.camZooms = camZooms;
-		FlxG.save.data.noteOffset = noteOffset;
+		FlxG.save.data.noteOffset = noteOffset; 
+		FlxG.save.data.osusom = osusom;
 		FlxG.save.data.hideHud = hideHud;
 		FlxG.save.data.arrowHSV = arrowHSV;
 		FlxG.save.data.imagesPersist = imagesPersist;
@@ -71,6 +84,11 @@ class ClientPrefs {
 		FlxG.save.data.hideTime = hideTime;
 		FlxG.save.data.achievementsMap = Achievements.achievementsMap;
 		FlxG.save.data.henchmenDeath = Achievements.henchmenDeath;
+		FlxG.save.data.dacut = dacut;
+		FlxG.save.data.dagf = dagf;
+		FlxG.save.data.cenoptim = cenoptim;
+		FlxG.save.data.easteregg = easteregg;
+		FlxG.save.data.dadia = dadia;
 		FlxG.save.flush();
 
 		var save:FlxSave = new FlxSave();
@@ -93,8 +111,32 @@ class ClientPrefs {
 				Main.fpsVar.visible = showFPS;
 			}
 		}
+		if(FlxG.save.data.dadia != null) {
+			dadia = FlxG.save.data.dadia;
+		}
+		if(FlxG.save.data.cenoptim != null) {
+			cenoptim = FlxG.save.data.cenoptim;
+		}
+		if(FlxG.save.data.speed != null) {
+			speed = FlxG.save.data.speed;
+		}
+		if(FlxG.save.data.scroll != null) {
+			scroll = FlxG.save.data.scroll;
+		}
+		if(FlxG.save.data.noteSize != null) {
+			noteSize = FlxG.save.data.noteSize;
+		}
+		if(FlxG.save.data.dacut != null) {
+			dacut = FlxG.save.data.dacut;
+		}
+		if(FlxG.save.data.dagf != null) {
+			dagf = FlxG.save.data.dagf;
+		}
 		if(FlxG.save.data.flashing != null) {
 			flashing = FlxG.save.data.flashing;
+		}
+		if(FlxG.save.data.easteregg != null) {
+			easteregg = FlxG.save.data.easteregg;
 		}
 		if(FlxG.save.data.globalAntialiasing != null) {
 			globalAntialiasing = FlxG.save.data.globalAntialiasing;
@@ -117,10 +159,10 @@ class ClientPrefs {
 		}
 		/*if(FlxG.save.data.cursing != null) {
 			cursing = FlxG.save.data.cursing;
-		}
+		}*/
 		if(FlxG.save.data.violence != null) {
 			violence = FlxG.save.data.violence;
-		}*/
+		}
 		if(FlxG.save.data.camZooms != null) {
 			camZooms = FlxG.save.data.camZooms;
 		}
@@ -129,6 +171,9 @@ class ClientPrefs {
 		}
 		if(FlxG.save.data.noteOffset != null) {
 			noteOffset = FlxG.save.data.noteOffset;
+		} 
+		if(FlxG.save.data.osusom != null) {
+			osusom = FlxG.save.data.osusom;
 		}
 		if(FlxG.save.data.arrowHSV != null) {
 			arrowHSV = FlxG.save.data.arrowHSV;

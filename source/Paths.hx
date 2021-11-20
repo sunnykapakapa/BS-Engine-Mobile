@@ -50,6 +50,8 @@ class Paths
 		#end
 	}
 
+
+
 	static public var currentModDirectory:String = null;
 	static var currentLevel:String;
 	static public function getModFolders()
@@ -133,7 +135,7 @@ class Paths
 
 	inline static public function lua(key:String, ?library:String)
 	{
-		return getPath('$key.lua', TEXT, library);
+		return Main.path + getPath('data/$key.lua', TEXT, library);
 	}
 
 	static public function video(key:String)
@@ -278,7 +280,7 @@ class Paths
 			xmlExists = true;
 		}
 
-		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library)), (xmlExists ? File.getContent(modsXml(key)) : file('images/$key.xml', library)));
+		return FlxAtlasFrames.fromSparrow((imageLoaded != null ? imageLoaded : image(key, library)), (xmlExists ? Assets.getText(modsXml(key)) : file('images/$key.xml', library)));
 		#else
 		return FlxAtlasFrames.fromSparrow(image(key, library), file('images/$key.xml', library));
 		#end
@@ -319,7 +321,7 @@ class Paths
 	}
 
 	inline static public function mods(key:String = '') {
-		return 'mods/' + key;
+		return Main.path + 'mods/' + key;
 	}
 
 	inline static public function modsJson(key:String) {
@@ -361,7 +363,7 @@ class Paths
 				return fileToCheck;
 			}
 		}
-		return 'mods/' + key;
+		return Main.path + 'mods/' + key;
 	}
 	#end
 }

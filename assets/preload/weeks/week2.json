@@ -1,8 +1,8 @@
 {
 	"songs": [
-		["Spookeez", "spooky", [34, 51, 68]],
-		["South", "spooky", [34, 51, 68]],
-		["Monster", "monster", [34, 51, 68]]
+		["Spookeez", "spooky", [34, 51, 68], "Spookeez"],
+		["South", "spooky", [34, 51, 68], "South"],
+		["Monster", "monster", [34, 51, 68], "Monster"]
 	],
 
 	"weekCharacters": [
@@ -18,5 +18,7 @@
 	"startUnlocked": true,
 
 	"hideStoryMode": false,
-	"hideFreeplay": false
+	"hideFreeplay": false,
+	"temcutscene": false,
+	"cutscenombre": "irineu"
 }

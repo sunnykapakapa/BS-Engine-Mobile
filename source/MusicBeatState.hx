@@ -2,17 +2,16 @@ package;
 
 import Conductor.BPMChangeEvent;
 import flixel.FlxG;
-import flixel.addons.ui.FlxUIState;
-import flixel.math.FlxRect;
-import flixel.util.FlxTimer;
-import flixel.addons.transition.FlxTransitionableState;
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
 import flixel.FlxSprite;
-import flixel.util.FlxColor;
-import flixel.util.FlxGradient;
 import flixel.FlxState;
-import flixel.FlxBasic;
+import flixel.addons.transition.FlxTransitionableState;
+import flixel.addons.ui.FlxUIState;
+import openfl.utils.Assets;
+#if mobileC
+import flixel.FlxCamera;
+import flixel.input.actions.FlxActionInput;
+import ui.FlxVirtualPad;
+#end
 
 class MusicBeatState extends FlxUIState
 {
@@ -25,6 +24,38 @@ class MusicBeatState extends FlxUIState
 
 	inline function get_controls():Controls
 		return PlayerSettings.player1.controls;
+
+	#if mobileC
+		var _virtualpad:FlxVirtualPad;
+
+		var trackedinputs:Array<FlxActionInput> = [];
+
+		// adding virtualpad to state
+		public function addVirtualPad(?DPad:FlxDPadMode, ?Action:FlxActionMode) {
+			_virtualpad = new FlxVirtualPad(DPad, Action);
+			_virtualpad.alpha = 0.75;
+			var padcam = new FlxCamera();
+			FlxG.cameras.add(padcam);
+			padcam.bgColor.alpha = 0;
+			_virtualpad.cameras = [padcam];
+			add(_virtualpad);
+			controls.setVirtualPad(_virtualpad, DPad, Action);
+			trackedinputs = controls.trackedinputs;
+			controls.trackedinputs = [];
+
+			#if android
+			controls.addAndroidBack();
+			#end
+		}
+		
+		override function destroy() {
+			controls.removeFlxInput(trackedinputs);
+
+			super.destroy();
+		}
+		#else
+		public function addVirtualPad(?DPad, ?Action){};
+		#end
 
 	override function create() {
 		var skip:Bool = FlxTransitionableState.skipNextTransOut;

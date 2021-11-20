@@ -18,11 +18,11 @@ using StringTools;
 class MasterEditorMenu extends MusicBeatState
 {
 	var options:Array<String> = [
-		'Week Editor',
-		'Menu Character Editor',
-		'Dialogue Editor',
-		'Dialogue Portrait Editor',
-		'Character Editor'
+		'Editor de semanas',
+		'Editor de menus',
+		'Editor de dialogos',
+		'Editor de retratos',
+		'Editor de personagens'
 	];
 	private var grpTexts:FlxTypedGroup<Alphabet>;
 
@@ -37,7 +37,10 @@ class MasterEditorMenu extends MusicBeatState
 		#end
 
 		var bg:FlxSprite = new FlxSprite().loadGraphic(Paths.image('menuDesat'));
-		bg.scrollFactor.set();
+		bg.setGraphicSize(Std.int(bg.width * 1.175));
+		bg.updateHitbox();
+		bg.screenCenter();
+		bg.antialiasing = ClientPrefs.globalAntialiasing;
 		bg.color = 0xFF353535;
 		add(bg);
 
@@ -49,10 +52,12 @@ class MasterEditorMenu extends MusicBeatState
 			var leText:Alphabet = new Alphabet(0, (70 * i) + 30, options[i], true, false);
 			leText.isMenuItem = true;
 			leText.targetY = i;
+			leText.screenCenter(X);
 			grpTexts.add(leText);
 		}
 
 		changeSelection();
+		addVirtualPad(UP_DOWN, A_B);
 		super.create();
 	}
 
@@ -75,15 +80,15 @@ class MasterEditorMenu extends MusicBeatState
 		if (controls.ACCEPT)
 		{
 			switch(options[curSelected]) {
-				case 'Character Editor':
-					LoadingState.loadAndSwitchState(new CharacterEditorState(Character.DEFAULT_CHARACTER, false));
-				case 'Week Editor':
+				case 'Editor de personagens':
+					LoadingState.loadAndSwitchState(new editors.CharacterEditorState(Character.DEFAULT_CHARACTER));
+				case 'Editor de semanas':
 					MusicBeatState.switchState(new WeekEditorState());
-				case 'Menu Character Editor':
+				case 'Editor de menus':
 					MusicBeatState.switchState(new MenuCharacterEditorState());
-				case 'Dialogue Portrait Editor':
+				case 'Editor de retratos':
 					LoadingState.loadAndSwitchState(new DialogueCharacterEditorState(), false);
-				case 'Dialogue Editor':
+				case 'Editor de dialogos':
 					LoadingState.loadAndSwitchState(new DialogueEditorState(), false);
 			}
 			FlxG.sound.music.volume = 0;

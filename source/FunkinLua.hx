@@ -95,6 +95,7 @@ class FunkinLua {
 		set('week', WeekData.weeksList[PlayState.storyWeek]);
 		set('seenCutscene', PlayState.seenCutscene);
 
+		set('version', MainMenuState.psychEngineVersion.trim());
 		// Camera poo
 		set('cameraX', 0);
 		set('cameraY', 0);
@@ -109,7 +110,6 @@ class FunkinLua {
 
 		set('score', 0);
 		set('misses', 0);
-		set('ghostMisses', 0);
 		set('hits', 0);
 
 		set('rating', 0);

@@ -52,11 +52,11 @@ class EditorLua {
 		var resultStr:String = Lua.tostring(lua, result);
 		if(resultStr != null && result != 0) {
 			lime.app.Application.current.window.alert(resultStr, 'Error on .LUA script!');
-			trace('Error on .LUA script! ' + resultStr);
+			//trace('Error on .LUA script! ' + resultStr);
 			lua = null;
 			return;
 		}
-		trace('Lua file loaded succesfully:' + script);
+		//trace('Lua file loaded succesfully:' + script);
 
 		var curState:Dynamic = FlxG.state;
 		lePlayState = curState;
