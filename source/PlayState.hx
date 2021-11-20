@@ -3137,7 +3137,7 @@ class PlayState extends MusicBeatState
 					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
 					FlxG.sound.music.stop();
 
-					if(winterHorrorlandNext) {
+					if(winterHorrorlandNext) { //marca duvidosa
 						new FlxTimer().start(1.5, function(tmr:FlxTimer) {
 							cancelFadeTween();
 							//resetSpriteCache = true;
