@@ -184,6 +184,8 @@ class MainMenuState extends MusicBeatState
 
 		changeItem();
 
+
+		
 		#if ACHIEVEMENTS_ALLOWED
 		Achievements.loadAchievements();
 		var leDate = Date.now();
@@ -195,6 +197,15 @@ class MainMenuState extends MusicBeatState
 				ClientPrefs.saveSettings();
 			}
 		}
+		if(ClientPrefs.easteregg){
+			var achieveID:Int = Achievements.getAchievementIndex('week7_nomiss');
+			if(!Achievements.isAchievementUnlocked(Achievements.achievementsStuff[achieveID][2])) {
+				Achievements.achievementsMap.set(Achievements.achievementsStuff[achieveID][2], true);
+				giveAchievemento();
+				ClientPrefs.easteregg = false;
+				ClientPrefs.saveSettings();
+				}
+		} //haha omega kek
 		#end
 
 		super.create();
@@ -204,6 +215,12 @@ class MainMenuState extends MusicBeatState
 	// Unlocks "Freaky on a Friday Night" achievement
 	function giveAchievement() {
 		add(new AchievementObject('friday_night_play', camAchievement));
+		FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
+		//trace('Giving achievement "friday_night_play"');
+	}
+		// Unlocks "Freaky on a Friday Night" achievement
+	function giveAchievemento() {
+		add(new AchievementObject('week7_nomiss', camAchievement));
 		FlxG.sound.play(Paths.sound('confirmMenu'), 0.7);
 		//trace('Giving achievement "friday_night_play"');
 	}

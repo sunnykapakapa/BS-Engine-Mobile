@@ -55,7 +55,7 @@ class FlashingStateDois extends MusicBeatState
 					FlxG.sound.play(Paths.sound('confirmMenu'));
 					FlxFlicker.flicker(warnText, 1, 0.1, false, true, function(flk:FlxFlicker) {
 						new FlxTimer().start(0.5, function (tmr:FlxTimer) {
-							MusicBeatState.switchState(new TitleState());
+							MusicBeatState.switchState(new MainMenuState());
 						});
 					});
 				}
@@ -71,7 +71,7 @@ class FlashingStateDois extends MusicBeatState
 					FlxG.sound.play(Paths.sound('secretSound')); //Porque é legal! Apenas!
 					FlxFlicker.flicker(warnText, 1, 0.1, false, true, function(flk:FlxFlicker) {
 						new FlxTimer().start(0.5, function (tmr:FlxTimer) {
-							MusicBeatState.switchState(new VideoState('assets/videos/bigshot', new TitleState()));
+							MusicBeatState.switchState(new VideoState('assets/videos/bigshot', new MainMenuState()));
 						});
 					});
 				}

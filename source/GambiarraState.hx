@@ -126,7 +126,10 @@ class GambiarraState extends MusicBeatState
 	{
 		if (stopMusic && FlxG.sound.music != null)
 			FlxG.sound.music.stop();
-		
+		if(art !=null){
+		art.destroy(); //Oh nao, estou destruindo a arte
+		art = null;
+		}
 		MusicBeatState.switchState(target);
 	}
 	

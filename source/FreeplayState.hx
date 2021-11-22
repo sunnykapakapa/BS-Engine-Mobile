@@ -222,7 +222,16 @@ class FreeplayState extends MusicBeatState
 		if (Math.abs(lerpRating - intendedRating) <= 0.01)
 			lerpRating = intendedRating;
 
-		scoreText.text = 'RECORDE: ' + lerpScore + ' (' + Math.floor(lerpRating * 100) + '%)';
+		var ratingSplit:Array<String> = Std.string(Highscore.floorDecimal(lerpRating * 100, 2)).split('.');
+		if(ratingSplit.length < 2) { //No decimals, add an empty space
+			ratingSplit.push('');
+		}
+
+		while(ratingSplit[1].length < 2) { //Less than 2 decimals in it, add decimals then
+			ratingSplit[1] += '0';
+		}
+
+		scoreText.text = 'RECORDE: ' + lerpScore + ' (' + ratingSplit.join('.') + '%)';
 		positionHighscore();
 
 		var upP = controls.UI_UP_P;
@@ -256,7 +265,7 @@ class FreeplayState extends MusicBeatState
 			MusicBeatState.switchState(new MainMenuState());
 		}
 
-		#if PRELOAD_ALL
+		//#if PRELOAD_ALL
 		if(space && instPlaying != curSelected)
 		{
 			destroyFreeplayVocals();
@@ -276,7 +285,8 @@ class FreeplayState extends MusicBeatState
 			vocals.volume = 0.7;
 			instPlaying = curSelected;
 		}
-		else #end if (accepted)
+		else //#end 
+			if (accepted)
 		{
 			var songLowercase:String = Paths.formatToSongPath(songs[curSelected].songName);
 			var poop:String = Highscore.formatSong(songLowercase, curDifficulty);
@@ -296,11 +306,11 @@ class FreeplayState extends MusicBeatState
 			if(colorTween != null) {
 				colorTween.cancel();
 			}
+			FlxG.sound.music.volume = 0;
+			destroyFreeplayVocals();
 			GambiarraState.loadAndSwitchState(new PlayState());
 
-			FlxG.sound.music.volume = 0;
-					
-			destroyFreeplayVocals();
+
 		}
 		super.update(elapsed);
 	}

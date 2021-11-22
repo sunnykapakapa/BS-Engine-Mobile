@@ -104,11 +104,6 @@ class TitleState extends MusicBeatState
 		#elseif CHARTING
 		MusicBeatState.switchState(new ChartingState());
 		#else
-		if(FlxG.save.data.flashing == null && !FlashingStateDois.leftState) {
-			FlxTransitionableState.skipNextTransIn = true;
-			FlxTransitionableState.skipNextTransOut = true;
-			MusicBeatState.switchState(new FlashingStateDois());
-		} else {
 			#if desktop
 			DiscordClient.initialize();
 			Application.current.onExit.add (function (exitCode) {
@@ -119,7 +114,6 @@ class TitleState extends MusicBeatState
 			{
 				startIntro();
 			});
-		}
 		#end
 	}
 
@@ -322,9 +316,12 @@ class TitleState extends MusicBeatState
 
 				new FlxTimer().start(1, function(tmr:FlxTimer)
 				{
-					if (mustUpdate) {
-						MusicBeatState.switchState(new OutdatedState());
-					} else {
+
+					if(FlxG.save.data.flashing == null && !FlashingStateDois.leftState) {
+						FlxTransitionableState.skipNextTransIn = true;
+						FlxTransitionableState.skipNextTransOut = true;
+						MusicBeatState.switchState(new FlashingStateDois());
+					} else { //haha duvido voce adivinhar o motivo de eu ter feito isso kek
 						MusicBeatState.switchState(new MainMenuState());
 					}
 					if(gfDance != null && logoBl != null && logoSpr != null && titleText != null) {

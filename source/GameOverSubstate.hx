@@ -27,11 +27,7 @@ class GameOverSubstate extends MusicBeatSubstate
 	public static var endSoundName:String = 'gameOverEnd';
 
 	public static function resetVariables() {
-		if(ClientPrefs.cenoptim && !PlayState.isPixelStage && !PlayState.antireanim){
-			characterName = 'bfreanim';
-		} else {
-		characterName = 'bf';
-		}
+		characterName = 'bfreanim';
 		deathSoundName = 'fnf_loss_sfx';
 		loopSoundName = 'gameOver';
 		endSoundName = 'gameOverEnd';

@@ -63,7 +63,6 @@ class OptionsState extends MusicBeatState
 		storybotao = new FlxUIButton(0, ((100 * (3 - (options.length / 2)))) + 70, "st", function() { //config
 			curSelected = 0;
 			checkiftouch = true;
-			FlxG.sound.play(Paths.sound('secretSound'), 0.7);
 		});
         storybotao.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
 		storybotao.resize(550,70);
@@ -74,7 +73,6 @@ class OptionsState extends MusicBeatState
 		freebotao = new FlxUIButton(0, ((100 * (4 - (options.length / 2)))) + 70, "fre", function() { //estilo
 			curSelected = 1;
 			checkiftouch = true;
-			FlxG.sound.play(Paths.sound('secretSound'), 0.7);
 		});
         freebotao.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
 		freebotao.resize(550,70);
@@ -85,7 +83,6 @@ class OptionsState extends MusicBeatState
 		creditbotao = new FlxUIButton(0, ((100 * (5 - (options.length / 2)))) + 70, "cre", function() { //mobile
 			curSelected = 2;
 			checkiftouch = true;
-			FlxG.sound.play(Paths.sound('secretSound'), 0.7);
 			});
 		creditbotao.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
 		creditbotao.resize(650,70);
@@ -96,7 +93,6 @@ class OptionsState extends MusicBeatState
 		opcaobotao = new FlxUIButton(0, ((100 * (6 - (options.length / 2)))) + 70, "caum", function() { // tecladin
 			curSelected = 3;
 			checkiftouch = true;
-			FlxG.sound.play(Paths.sound('secretSound'), 0.7);
 		});
         opcaobotao.setLabelFormat("VCR OSD Mono",24,FlxColor.BLACK,"center");
 		opcaobotao.resize(950,70);
@@ -158,6 +154,7 @@ class OptionsState extends MusicBeatState
 				item.alpha = 0;
 			}
 			checkiftouch = false;
+			FlxG.sound.play(Paths.sound('secretSound'), 0.7);
 
 			switch(options[curSelected]) {
 				case 'Configuracoes':
@@ -173,7 +170,6 @@ class OptionsState extends MusicBeatState
 					openSubState(new ControlsSubstate());
 					
 				case 'voltar ao menu principal':
-					FlxG.sound.play(Paths.sound('cancelMenu'));
 					MusicBeatState.switchState(new MainMenuState());
 
 			}
@@ -505,7 +501,6 @@ class ControlsSubstate extends MusicBeatSubstate {
 	private var grpOptions:FlxTypedGroup<Alphabet>;
 	private var grpInputs:Array<AttachedText> = [];
 	private var grpInputsAlt:Array<AttachedText> = [];
-	private var controlMap:Map<String, Dynamic>;
 	var rebindingKey:Bool = false;
 	var nextAccept:Int = 5;
 
@@ -514,7 +509,6 @@ class ControlsSubstate extends MusicBeatSubstate {
 		grpOptions = new FlxTypedGroup<Alphabet>();
 		add(grpOptions);
 
-		controlMap = ClientPrefs.keyBinds.copy();
 		optionShit.push(['']);
 		optionShit.push([defaultKey]);
 
@@ -525,13 +519,14 @@ class ControlsSubstate extends MusicBeatSubstate {
 				isCentered = true;
 			}
 
-			var optionText:Alphabet = new Alphabet(0, (10 * i), optionShit[i][0], (!isCentered), false);
+			var optionText:Alphabet = new Alphabet(0, (10 * i), optionShit[i][0], (!isCentered || isDefaultKey), false);
 			optionText.isMenuItem = true;
-			optionText.screenCenter(X);
 			if(isCentered) {
 				optionText.screenCenter(X);
 				optionText.forceX = optionText.x;
 				optionText.yAdd = -55;
+			} else {
+				optionText.forceX = 200;
 			}
 			optionText.yMult = 60;
 			optionText.targetY = i;
@@ -561,18 +556,14 @@ class ControlsSubstate extends MusicBeatSubstate {
 			}
 
 			if (controls.BACK || FlxG.android.justReleased.BACK) { //haha sistema anti burrice
-				ClientPrefs.keyBinds = controlMap.copy();
 				ClientPrefs.reloadControls();
-				grpOptions.forEachAlive(function(spr:Alphabet) {
-					spr.alpha = 0;
-				});
 				close();
 				FlxG.sound.play(Paths.sound('cancelMenu'));
 			}
 
-			if(controls.ACCEPT && nextAccept <= 0) {
+			if(controls.ACCEPT || FlxG.keys.justPressed.ENTER && nextAccept <= 0) {
 				if(optionShit[curSelected][0] == defaultKey) {
-					controlMap = ClientPrefs.defaultKeys.copy();
+					ClientPrefs.keyBinds = ClientPrefs.defaultKeys.copy();
 					reloadKeys();
 					changeSelection();
 					FlxG.sound.play(Paths.sound('confirmMenu'));
@@ -590,14 +581,14 @@ class ControlsSubstate extends MusicBeatSubstate {
 		} else {
 			var keyPressed:Int = FlxG.keys.firstJustPressed();
 			if (keyPressed > -1) {
-				var keysArray:Array<FlxKey> = controlMap.get(optionShit[curSelected][1]);
+				var keysArray:Array<FlxKey> = ClientPrefs.keyBinds.get(optionShit[curSelected][1]);
 				keysArray[curAlt ? 1 : 0] = keyPressed;
 
 				var opposite:Int = (curAlt ? 0 : 1);
 				if(keysArray[opposite] == keysArray[1 - opposite]) {
 					keysArray[opposite] = NONE;
 				}
-				controlMap.set(optionShit[curSelected][1], keysArray);
+				ClientPrefs.keyBinds.set(optionShit[curSelected][1], keysArray);
 
 				reloadKeys();
 				FlxG.sound.play(Paths.sound('confirmMenu'));
@@ -632,7 +623,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 		}
 		return num;
 	}
-	
+
 	function changeSelection(change:Int = 0) {
 		do {
 			curSelected += change;
@@ -711,7 +702,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 	}
 
 	private function addBindTexts(optionText:Alphabet, num:Int) {
-		var keys:Array<Dynamic> = controlMap.get(optionShit[num][1]);
+		var keys:Array<Dynamic> = ClientPrefs.keyBinds.get(optionShit[num][1]);
 		var text1 = new AttachedText(InputFormatter.getKeyName(keys[0]), 400, -55);
 		text1.setPosition(optionText.x + 400, optionText.y - 55);
 		text1.sprTracker = optionText;
@@ -738,6 +729,8 @@ class ControlsSubstate extends MusicBeatSubstate {
 			grpInputsAlt.remove(item);
 			item.destroy();
 		}
+
+		//trace('Reloaded keys: ' + ClientPrefs.keyBinds);
 
 		for (i in 0...grpOptions.length) {
 			if(!unselectableCheck(i, true)) {
@@ -779,7 +772,7 @@ class ControlsSubstate extends MusicBeatSubstate {
 			}
 		}
 	}
-}
+} 
 
 
 
@@ -859,6 +852,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 				optionText.forceX = optionText.x;
 			} else {
 				optionText.x += 300;
+				
 				optionText.forceX = 300;
 			}
 			optionText.yMult = 90;
@@ -1120,7 +1114,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 			case 'FPS Visivel':
 				daText = "Se desmarcado o FPS fica invisivel.";
 			case 'Reducao grafica':
-				daText = "se desmarcardo, desativa os detalhes do cenario,\naumenta a velocidade de carregado e a performance\n mas a custo de ver o Ycaro morrendo.";
+				daText = "se desmarcardo, desativa os detalhes do cenario,\naumenta a velocidade de carregamento e a performance.";
 			case 'Salvar imagens em cache':
 				daText = "Se marcado, os sprites permanecerao na memoria\neconomiza a memoria e evita crashes na gameplay,\nmas aumenta o tempo de carregamento (relaxa, nao somos o Peppy)\n nao e farpas se for true : D";
 			case 'Anti-Aliasing':
@@ -1142,7 +1136,7 @@ class PreferencesSubstate extends MusicBeatSubstate
 			case 'Luzes Piscantes':
 				daText = "Deixe desmarcado caso tenha problemas com epilepsia";
 			case 'BF Reanimado':
-				daText = "Se desativado, tu jogara com um bf normal";
+				daText = "Se desativado, tu jogaras com um bf normal";
 			case 'Pular Cutscenes':
 				daText = "Auto-Explicativo eu acho";	
 			case 'Pular dialogos':
