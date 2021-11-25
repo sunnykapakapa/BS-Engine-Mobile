@@ -18,15 +18,15 @@ class Achievements {
 		["Oh yes",					"Vença a week 4 no Hard sem errar.",				'week4_nomiss',			false],
 		["A barreira",			"Vença a week 5 no Hard sem errar.",				'week5_nomiss',			false],
 		["Seu pior pesadelo",					"Vença a week 6 no Hard sem errar.",				'week6_nomiss',			false],
-		["W.D",			"Ache a cutscene secreta dentro do game.",				'week7_nomiss',			 true],
+		["Kekeke",			"Ache a cutscene secreta dentro do game.",				'week7_nomiss',			 true],
 		["Seu idiota",	"Acerte menos que 20% da musica.",	'ur_bad',				false],
-		["Essa é uma ideia maravilhosa",				"tenha 100% em uma musica, confio em ti.",			'ur_good',				false],
+		["Eita uau como você é bom amigo",				"tenha 100% em uma musica, confio em ti.",			'ur_good',				false],
 		["quando eu tiver testando eu mudo",			"Watch the Henchmen die over 100 times.",			'roadkill_enthusiast',	false],
 		["Uau... Você canta bastante hein",		"Segure uma nota por 20 segundos",					'oversinging',			false],
 		["Faz sentido como você caiu",					"Termine uma musica sem voltar para a animacao padrao.",				'hype',					false],
 		["Muffet...?",			"Termine uma musica com apenas duas teclas.",			'two_keys',				false],
 		["Gameboy",				"Por acaso, voce jogou o mod num gameboy?",		'toastie',				false],
-		["dps mudo",					"Ganhe o \"Test\" pelo Editor de Chart.",	'debugger',				 true]
+		["Hacker sujo",					"Ganhe o \"Test\" pelo Editor de Chart.",	'debugger',				 true]
 	];
 	public static var achievementsMap:Map<String, Bool> = new Map<String, Bool>();
 
