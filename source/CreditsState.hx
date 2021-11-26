@@ -56,7 +56,10 @@ class CreditsState extends MusicBeatState
 	['ninjamuffin99',		'ninjamuffin99',	"Programmer of Friday Night Funkin'",				'https://twitter.com/ninja_muffin99',	'0xFFF73838'],
 	['PhantomArcade',		'phantomarcade',	"Animator of Friday Night Funkin'",					'https://twitter.com/PhantomArcade3K',	'0xFFFFBB1B'],
 	['evilsk8r',			'evilsk8r',			"Artist of Friday Night Funkin'",					'https://twitter.com/evilsk8r',			'0xFF53E52C'],
-	['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",					'https://twitter.com/kawaisprite',		'0xFF6475F3']
+       	['kawaisprite',			'kawaisprite',		"Composer of Friday Night Funkin'",					'https://twitter.com/kawaisprite',		'0xFF6475F3']
+	['undertale team yeah yeah cool'],
+	['TemmieChang',			'TemmieChang',			"artista de undertale e outras budegas la man'",				'https://twitter.com/tuyoki',			'0xFF53E52C'],
+	['TobyFox',			'TobyFox',			"criador \nCompositor e outras coisas de undertale'",				'https://twitter.com/tobyfox',			'0xFF53E52C'],
 ];
 
 	var bg:FlxSprite;
