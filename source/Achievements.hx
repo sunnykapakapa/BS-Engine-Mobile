@@ -21,9 +21,9 @@ class Achievements {
 		["Kekeke",			"Ache a cutscene secreta dentro do game.",				'week7_nomiss',			 true],
 		["Seu idiota",	"Acerte menos que 20% da musica.",	'ur_bad',				false],
 		["Eita uau como você é bom amigo",				"tenha 100% em uma musica, confio em ti.",			'ur_good',				false],
-		["quando eu tiver testando eu mudo",			"Watch the Henchmen die over 100 times.",			'roadkill_enthusiast',	false],
+		["os espectadores estão subindo",			"veja os espectadores subirem 10 vezes.",			'roadkill_enthusiast',	false],
 		["Uau... Você canta bastante hein",		"Segure uma nota por 20 segundos",					'oversinging',			false],
-		["Faz sentido como você caiu",					"Termine uma musica sem voltar para a animacao padrao.",				'hype',					false],
+		["Faz sentido como voce caiu",					"Termine uma musica sem voltar para a animacao padrao.",				'hype',					false],
 		["Muffet...?",			"Termine uma musica com apenas duas teclas.",			'two_keys',				false],
 		["Gameboy",				"Por acaso, voce jogou o mod num gameboy?",		'toastie',				false],
 		["Hacker sujo",					"Ganhe o \"Test\" pelo Editor de Chart.",	'debugger',				 true]
